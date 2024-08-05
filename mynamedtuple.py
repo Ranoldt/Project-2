@@ -34,5 +34,10 @@ def mynamedtuple(type_name, field_names, mutable = False, default = {}):
     repr_method = f'    def repr(self):\n'
     repr_method += f'        return f"{type_name}({", ".join(f"{name}={{self.{name}!r}}" for name in field_names)})"\n'
 
+    get_methods = ''
+    for name in field_names:
+        get_methods += f'    def get{name}(self):\n'
+        get_methods += f'        return self.{name}\n'
+
     class_def = class_name + init_method + repr_method
     print(class_def)
