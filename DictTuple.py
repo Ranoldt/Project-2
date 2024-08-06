@@ -65,6 +65,34 @@ class DictTuple:
                 yield key
         return gen_function(self.dt)
 
+    def __eq__(self, other):
+        keys_set = {key for item in self.dt for key in item.keys()}
+        if type(other) is DictTuple:
+            for key in keys_set:
+                if key not in other:
+                    return False
+                elif len(keys_set) != len(other):
+                    return False
+            return True
+        elif type(other) is dict:
+            if keys_set != set(other.keys()):
+                return False
+            elif len(keys_set) != len(other):
+                return False
+            return True
+
+    def __add__(self, other):
+        if type(other) is DictTuple:
+            dt = self.dt + other.dt
+            return DictTuple(*dt)
+        elif type(other) is dict:
+            dt = self.dt + [other]
+            return DictTuple(*dt)
+
+    def __radd__(self, other):
+        if type(other) is dict:
+            dt = [other] + self.dt
+            return DictTuple(*dt)
 
 if __name__ == '__main__':
     coordinate = mynamedtuple('coordinate', 'x y')
@@ -84,3 +112,9 @@ if __name__ == '__main__':
     print(d('c1'))
     for i in d:
         print(i)
+    d1 = DictTuple({'c1': coordinate(1, 2)}, {'c1': coordinate(3, 4)})
+    d2 = DictTuple({'c2': coordinate(1, 2)}, {'c3': coordinate(3, 4)})
+    print(d2 + d1)
+    adt = DictTuple({'c1': coordinate(1, 2)}, {'c1': coordinate(3, 4)})
+    adict = {'c3': coordinate(3, 4)}
+    print(adict + adt)
