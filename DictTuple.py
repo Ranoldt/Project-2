@@ -88,11 +88,26 @@ class DictTuple:
         elif type(other) is dict:
             dt = self.dt + [other]
             return DictTuple(*dt)
+        else:
+            raise TypeError(f"{other} is not a DictTuple or a dict")
 
     def __radd__(self, other):
         if type(other) is dict:
             dt = [other] + self.dt
             return DictTuple(*dt)
+        else:
+            raise TypeError(f"{other} is not a DictTuple or a dict")
+
+    def __setattr__(self, key, value):
+        try:
+            if super().__getattribute__('dt'):
+                dt_created = True
+        except AttributeError:
+            dt_created = False
+            self.__dict__[key] = value
+        if dt_created:
+            raise AttributeError(f"Cannot Modify DictTuple attributes")
+
 
 if __name__ == '__main__':
     coordinate = mynamedtuple('coordinate', 'x y')
@@ -118,3 +133,5 @@ if __name__ == '__main__':
     adt = DictTuple({'c1': coordinate(1, 2)}, {'c1': coordinate(3, 4)})
     adict = {'c3': coordinate(3, 4)}
     print(adict + adt)
+
+
