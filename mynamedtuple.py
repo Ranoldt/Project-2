@@ -58,7 +58,15 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     eq_method += '                return False\n'
     eq_method += '        return True\n'
 
+    asdict_method = '    def _asdict(self):\n'
+    asdict_method += '        return {key:self[i] for i,key in enumerate(self._fields)}\n'
+
+    make_method = '    @classmethod\n'
+    make_method += '    def _make(cls, iterable):\n'
+    make_method += '        return cls(*iterable)\n'
+
     class_def = class_name + class_variables + init_method + repr_method + get_methods + getitem_method + eq_method
+    class_def += asdict_method + make_method
 
     print(class_def)
     namespace = {}
