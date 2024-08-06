@@ -27,17 +27,23 @@ def mynamedtuple(type_name, field_names, mutable = False, default = {}):
         raise SyntaxError("Mismatch between default fields and provided fields")
 
     class_name = f'class {type_name}:\n'
+    class_variables = f'    _fields = {field_names}\n'
+    class_variables += f'    _mutable = {mutable}\n'
+
     init_method = f'    def init(self, {", ".join(f"{name} = {default.get(name)}" for name in field_names)}):\n'
     for name in field_names:
         init_method += f'        self.{name} = {name}\n'
 
     repr_method = f'    def repr(self):\n'
-    repr_method += f'        return f"{type_name}({", ".join(f"{name}={{self.{name}!r}}" for name in field_names)})"\n'
+    repr_method += f'        return f"{type_name}({", ".join(f"{name}={{self.{name}}}" for name in field_names)})"\n'
 
     get_methods = ''
     for name in field_names:
         get_methods += f'    def get{name}(self):\n'
         get_methods += f'        return self.{name}\n'
 
-    class_def = class_name + init_method + repr_method
+    getitem_method = '    def getitem(self, index):\n'
+    getitem_method += f'        return getattr(self, self._fields[index])\n'
+
+    class_def = class_name + init_method + repr_method + get_methods
     print(class_def)
