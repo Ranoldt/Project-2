@@ -51,6 +51,20 @@ class DictTuple:
         if not deleted:
             raise KeyError(f"{key} is not in {self.dt}")
 
+    def __call__(self, key):
+        value_lst = []
+        for item in self.dt:
+            if key in item:
+                value_lst.append(list(item[key]._asdict().values()))
+        return value_lst
+
+    def __iter__(self):
+        def gen_function(dt):
+            keys_set = {key for item in dt[::-1] for key in sorted(list(item.keys()))}
+            for key in keys_set:
+                yield key
+        return gen_function(self.dt)
+
 
 if __name__ == '__main__':
     coordinate = mynamedtuple('coordinate', 'x y')
@@ -67,3 +81,6 @@ if __name__ == '__main__':
     print('new:', d['c1'])
     d['c2'] = coordinate(1, 3)
     print(d.dt)
+    print(d('c1'))
+    for i in d:
+        print(i)
