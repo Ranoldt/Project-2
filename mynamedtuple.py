@@ -101,7 +101,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_def = class_name + class_variables + init_method + repr_method + get_methods + getitem_method
     class_def += eq_method + asdict_method + make_method + replace_method + setattr_method
 
-    #print(class_def)
+    print(class_def)
 
     namespace = {}
     exec(class_def, {}, namespace)
@@ -109,9 +109,9 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 
 
 if __name__ == '__main__':
-    coordinate = mynamedtuple('coordinate', 'x y', True, default={'y': 0})
-    print(coordinate)
-    origin = coordinate(0, 0)
+    #coordinate = mynamedtuple('coordinate', 'x y', True, default={'y': 0})
+    #print(coordinate)
+    #origin = coordinate(0, 0)
     """
     q1 - are you supposed to be able to add attributes
     q2 - does the _make method include strings as an iterable does it reflect. 
