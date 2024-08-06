@@ -35,11 +35,13 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_name = f'class {type_name}:\n'
     class_variables = f'    _fields = {field_names}\n'
     class_variables += f'    _mutable = {mutable}\n'
+    class_variables += f'    init = False\n'
 
     # __init__ method
     init_method = f'    def __init__(self, {", ".join(f"{name}={default.get(name, None)}" for name in field_names)}):\n'
     for name in field_names:
         init_method += f'        self.{name} = {name}\n'
+    init_method += '        self.init = True\n'
 
     # __repr__ method
     repr_method = '    def __repr__(self):\n'
@@ -89,7 +91,9 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 
     # __setattr__ method
     setattr_method = '    def __setattr__(self, name, value):\n'
-    setattr_method += '        if self._mutable:\n'
+    setattr_method += '        if not self.init:\n'
+    setattr_method += '            self.__dict__[name] = value\n'
+    setattr_method += '        elif self._mutable:\n'
     setattr_method += '            self.__dict__[name] = value\n'
     setattr_method += '        else:\n'
     setattr_method += '            raise AttributeError("namedtuple is not mutable")\n'
@@ -105,7 +109,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 
 
 if __name__ == '__main__':
-    coordinate = mynamedtuple('coordinate', 'x y', default={'y': 0})
+    coordinate = mynamedtuple('coordinate', 'x y', True, default={'y': 0})
     print(coordinate)
     origin = coordinate(0, 0)
-    print(origin)
+
