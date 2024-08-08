@@ -107,31 +107,3 @@ class DictTuple:
             self.__dict__[key] = value
         if dt_created:
             raise AttributeError(f"Cannot Modify DictTuple attributes")
-
-
-if __name__ == '__main__':
-    coordinate = mynamedtuple('coordinate', 'x y')
-    d = DictTuple({'c1': coordinate(1, 2)}, {'c1': coordinate(3, 4)})
-    print(len(d))
-    print(bool(d))
-    print(d)
-    if 'c2' in d:
-        print('yea')
-    else:
-        print('no')
-    print(d['c1'])
-    d['c1'] = coordinate(2, 4)
-    print('new:', d['c1'])
-    d['c2'] = coordinate(1, 3)
-    print(d.dt)
-    print(d('c1'))
-    for i in d:
-        print(i)
-    d1 = DictTuple({'c1': coordinate(1, 2)}, {'c1': coordinate(3, 4)})
-    d2 = DictTuple({'c2': coordinate(1, 2)}, {'c3': coordinate(3, 4)})
-    print(d2 + d1)
-    adt = DictTuple({'c1': coordinate(1, 2)}, {'c1': coordinate(3, 4)})
-    adict = {'c3': coordinate(3, 4)}
-    print(adict + adt)
-
-

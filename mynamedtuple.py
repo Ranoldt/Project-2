@@ -6,25 +6,30 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     try:
         assert type(type_name) is str and type_name[0].isalpha() is True and keyword.iskeyword(type_name) is False
     except AssertionError:
-        raise SyntaxError(f"Invalid type name: {type_name}")
+        raise SyntaxError(f"Invalid type name: '{type_name}' is a python keyword or does not begin with letter.")
 
     # Validate field name is list or string
     if type(field_names) is list:
         pass
     elif type(field_names) is str:
         if ',' in field_names:
-            field_names = list(set(field_names.split(',')))
+            field_names = field_names.split(',')
         else:
-            field_names = list(set(field_names.split()))
+            field_names = field_names.split()
     else:
         raise SyntaxError("Fields must be a list or a string")
+    new_lst = []
+    for i in field_names:
+        if i not in new_lst:
+            new_lst.append(i)
+    field_names = new_lst
 
     # Validate each field name
     for name in field_names:
         try:
             assert name[0].isalpha() is True and keyword.iskeyword(name) is False
         except AssertionError:
-            raise SyntaxError(f"Invalid field name: {name}")
+            raise SyntaxError(f"Invalid field name: '{name}' is a python keyword or does not begin with letter.")
 
     # Check if all default fields are in field_names
     field_list = [element for element in field_names if element in list(default)]
@@ -102,22 +107,14 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_def = class_name + class_variables + init_method + repr_method + get_methods + getitem_method
     class_def += eq_method + asdict_method + make_method + replace_method + setattr_method
 
-    print(class_def)
-
     namespace = {}
+    print(class_def)
     exec(class_def, {}, namespace)
     return namespace[type_name]
 
-
 if __name__ == '__main__':
-    coordinate = mynamedtuple('coordinate', 'x y', False, default={'y': 0})
-    print(coordinate)
-    origin = coordinate(0, 0)
-    print(origin)
-    origin.x = 1
-    print(origin)
-
-    """
-    q1 - are you supposed to be able to add attributes
-    q2 - does the _make method include strings as an iterable does it reflect. 
-    """
+    coordinate = mynamedtuple('coordinate', 'x y', mutable=True, default={'y':0})
+    p = coordinate(1,2)
+    p.z = 3
+    print(p._fields)
+    print(p.z)
