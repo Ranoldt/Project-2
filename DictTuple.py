@@ -66,20 +66,19 @@ class DictTuple:
         return gen_function(self.dt)
 
     def __eq__(self, other):
-        keys_set = {key for item in self.dt for key in item.keys()}
         if type(other) is DictTuple:
-            for key in keys_set:
-                if key not in other:
-                    return False
-                elif len(keys_set) != len(other):
-                    return False
-            return True
+            other_set = {key for item in other.dt for key in item.keys()}
         elif type(other) is dict:
-            if keys_set != set(other.keys()):
+            other_set = {key for key in other.keys()}
+        else:
+            raise TypeError(f"{other} is not a DictTuple or a dict")
+
+        for key in other_set:
+            if key not in self:
                 return False
-            elif len(keys_set) != len(other):
+            if self[key] != other[key]:
                 return False
-            return True
+        return True
 
     def __add__(self, other):
         if type(other) is DictTuple:
@@ -107,3 +106,8 @@ class DictTuple:
             self.__dict__[key] = value
         if dt_created:
             raise AttributeError(f"Cannot Modify DictTuple attributes")
+
+if __name__ == '__main__':
+    d1 = DictTuple({'a':1, 'b':2}, {'c':3, 'b':12})
+    d2 = {'a':1, 'c':3, 'b':12,'d':2}
+    print(d1 == d2)

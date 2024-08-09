@@ -100,7 +100,8 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     setattr_method += '            self.__dict__[name] = value\n'
     setattr_method += '            return\n'
     setattr_method += '        if self._mutable:\n'
-    setattr_method += '            self.__dict__[name] = value\n'
+    setattr_method += '            if name in self.__dict__:\n'
+    setattr_method += '                self.__dict__[name] = value\n'
     setattr_method += '        else:\n'
     setattr_method += '            raise AttributeError("namedtuple is not mutable.")\n'
 
@@ -115,6 +116,5 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 if __name__ == '__main__':
     coordinate = mynamedtuple('coordinate', 'x y', mutable=True, default={'y':0})
     p = coordinate(1,2)
-    p.z = 3
-    print(p._fields)
-    print(p.z)
+    p._replace(y =4)
+    print(p)
