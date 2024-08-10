@@ -3,6 +3,7 @@ from mynamedtuple import mynamedtuple
 
 class DictTuple:
     def __init__(self, *args):
+        assert len(args) != 0, f"{self.__class__.__name__} must have at least one argument"
         for arg in args:
             assert type(arg) is dict, f"{self.__class__.__name__}.__init__: {arg} is not a dictionary."
             assert len(arg) != 0, f"{self.__class__.__name__}.__init__: {arg} is empty."
@@ -18,7 +19,7 @@ class DictTuple:
         return False
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({", ".join({str(item)} for item in self.dt)})'
+        return f'{self.__class__.__name__}({", ".join(f'{item}' for item in self.dt)})'
 
     def __contains__(self, item):
         keys_set = {key for item in self.dt for key in item.keys()}
@@ -43,9 +44,9 @@ class DictTuple:
 
     def __delitem__(self, key):
         deleted = False
-        for item in self.dt[:]:
+        for item in self.dt:
             if key in item:
-                self.dt.remove(item)
+                del item[key]
                 deleted = True
 
         if not deleted:
@@ -112,5 +113,6 @@ class DictTuple:
 
 if __name__ == '__main__':
     d1 = DictTuple({'a':1, 'b':2}, {'c':3, 'b':12})
+    d1['e'] = 5
+    print(d1)
     d2 = {'a':1, 'c':3, 'b':12,'d':2}
-    print(d1 == d2)

@@ -4,7 +4,7 @@ import keyword
 def mynamedtuple(type_name, field_names, mutable=False, default={}):
     # Validate type_name
     try:
-        assert type(type_name) is str and type_name[0].isalpha() is True and keyword.iskeyword(type_name) is False
+        assert type(type_name) is str and type_name.strip()[0].isalpha() is True and keyword.iskeyword(type_name) is False
     except AssertionError:
         raise SyntaxError(f"Invalid type name: '{type_name}' is a python keyword or does not begin with letter.")
 
@@ -27,7 +27,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     # Validate each field name
     for name in field_names:
         try:
-            assert name[0].isalpha() is True and keyword.iskeyword(name) is False
+            assert name.strip()[0].isalpha() is True and keyword.iskeyword(name) is False
         except AssertionError:
             raise SyntaxError(f"Invalid field name: '{name}' is a python keyword or does not begin with letter.")
 
@@ -48,7 +48,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 
     # __repr__ method
     repr_method = '    def __repr__(self):\n'
-    repr_method += f'        return f"{type_name}({", ".join(f"{name}={{self.{name}}}" for name in field_names)})"\n'
+    repr_method += f'        return f"{type_name}({",".join(f"{name}={{self.{name}}}" for name in field_names)})"\n'
 
     # __getter__ methods
     get_methods = ''
@@ -85,6 +85,8 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 
     # _replace method
     replace_method = '    def _replace(self, **kargs):\n'
+    replace_method += '        if len(kargs) == 0\n'
+    replace_method += f'            raise TypeError("{type_name}._replace must have at least one argument.\n'
     replace_method += '        if self._mutable:\n'
     replace_method += '            for key, value in kargs.items():\n'
     replace_method += '                setattr(self, key, value)\n'
