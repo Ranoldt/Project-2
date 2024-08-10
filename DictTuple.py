@@ -18,7 +18,7 @@ class DictTuple:
         return False
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({", ".join(f'{item}' for item in self.dt)})'
+        return f'{self.__class__.__name__}({", ".join({str(item)} for item in self.dt)})'
 
     def __contains__(self, item):
         keys_set = {key for item in self.dt for key in item.keys()}
@@ -60,9 +60,12 @@ class DictTuple:
 
     def __iter__(self):
         def gen_function(dt):
-            keys_set = {key for item in dt[::-1] for key in sorted(list(item.keys()))}
-            for key in keys_set:
-                yield key
+            keys_lst = [key for item in dt[::-1] for key in sorted(list(item.keys()))]
+            lst = []
+            for key in keys_lst:
+                if key not in lst:
+                    lst.append(key)
+                    yield key
         return gen_function(self.dt)
 
     def __eq__(self, other):
