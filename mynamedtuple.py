@@ -21,7 +21,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     new_lst = []
     for i in field_names:
         if i not in new_lst:
-            new_lst.append(i)
+            new_lst.append(i.strip())
     field_names = new_lst
 
     # Validate each field name
@@ -104,6 +104,8 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     setattr_method += '        if self._mutable:\n'
     setattr_method += '            if name in self.__dict__:\n'
     setattr_method += '                self.__dict__[name] = value\n'
+    setattr_method += '            else:\n'
+    setattr_method += f'                raise TypeError("{type_name}_replace cannot add new attributes.")\n'
     setattr_method += '        else:\n'
     setattr_method += '            raise AttributeError("namedtuple is not mutable.")\n'
 
@@ -118,5 +120,5 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 if __name__ == '__main__':
     coordinate = mynamedtuple('coordinate', 'x y', mutable=True, default={'y':0})
     p = coordinate(1,2)
-    p._replace(y =4)
-    print(p)
+    p._replace(z= 3)
+    print(p.__dict__)

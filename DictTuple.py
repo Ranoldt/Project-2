@@ -109,7 +109,10 @@ class DictTuple:
             dt_created = False
             self.__dict__[key] = value
         if dt_created:
-            raise AttributeError(f"Cannot Modify DictTuple attributes")
+            if key in self.__dict__:
+                self.__dict__[key] = value
+            else:
+                raise AttributeError(f"Cannot Modify DictTuple attributes")
 
 if __name__ == '__main__':
     d1 = DictTuple({'a':1, 'b':2}, {'c':3, 'b':12})
