@@ -86,7 +86,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     # _replace method
     replace_method = '    def _replace(self, **kargs):\n'
     replace_method += '        if len(kargs) == 0\n'
-    replace_method += f'            raise TypeError("{type_name}._replace must have at least one argument.\n'
+    replace_method += f'            raise TypeError("{type_name}._replace must have at least one argument.")\n'
     replace_method += '        if self._mutable:\n'
     replace_method += '            for key, value in kargs.items():\n'
     replace_method += '                setattr(self, key, value)\n'

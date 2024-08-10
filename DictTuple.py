@@ -19,7 +19,7 @@ class DictTuple:
         return False
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({", ".join(f'{item}' for item in self.dt)})'
+        return f'{self.__class__.__name__}({", ".join(str(item) for item in self.dt)})'
 
     def __contains__(self, item):
         keys_set = {key for item in self.dt for key in item.keys()}
