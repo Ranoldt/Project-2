@@ -37,7 +37,7 @@ class DictTuple:
     def __setitem__(self, key, value):
         for item in reversed(self.dt):
             if key in item:
-                item[key] = value
+                item.update({key: value})
                 break
         else:
             self.dt.append({key: value})
