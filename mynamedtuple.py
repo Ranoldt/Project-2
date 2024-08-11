@@ -112,8 +112,6 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_def = class_name + class_variables + init_method + repr_method + get_methods + getitem_method
     class_def += eq_method + asdict_method + make_method + replace_method + setattr_method
 
-    print(class_def)
-
     namespace = {}
     exec(class_def, {}, namespace)
     return namespace[type_name]

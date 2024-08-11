@@ -35,12 +35,14 @@ class DictTuple:
             raise KeyError(f"{key} is not in {self.dt}")
 
     def __setitem__(self, key, value):
-        for item in self.dt[::-1]:
+        lst = []
+        for item in self.dt:
             if key in item:
-                item[key] = value
-                break
-        else:
+                lst.append(self.dt.index(item))
+        if len(lst) == 0:
             self.dt.append({key: value})
+        else:
+            self.dt[lst[-1]][key] = value
 
     def __delitem__(self, key):
         deleted = False
@@ -108,14 +110,14 @@ class DictTuple:
         self.__dict__[key] = value
 
 if __name__ == '__main__':
-    grade = mynamedtuple('grade', 'name score letter')
-    t = DictTuple({'s1': grade('carl', 95, 'A')},
-                  {'s1': grade('mark', 30, 'F'), 's2': grade('eve', 78, 'C')},
-                  {'s1': grade('jeb', 55, 'D')},
-                  {'s1': grade('frank', 85, 'B')})
+    d1 = DictTuple({'a':2, 'b':3}, {'c':4, 'd':5, 'e':6, 'a':15})
+    print(d1)
+    d1['a'] = 5
+    print(d1)
+    d1['f'] = 7
+    print(d1)
 
-    x = eval(repr(t))
-    print(x)
+
 
 
 
