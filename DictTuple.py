@@ -35,7 +35,7 @@ class DictTuple:
             raise KeyError(f"{key} is not in {self.dt}")
 
     def __setitem__(self, key, value):
-        for item in self.dt:
+        for item in self.dt[::-1]:
             if key in item:
                 item.update({key: value})
                 return
@@ -106,7 +106,7 @@ class DictTuple:
         self.__dict__[key] = value
 
 if __name__ == '__main__':
-    d1 = DictTuple({'a':1, 'b':2}, {'c':3, 'b':12},{'g':2})
+    d1 = DictTuple({'a':1, 'b':2}, {'c':3, 'b':12, 'b': 5},{'g':2})
     d1['b'] = 18
     d1['e'] = 5
     print(d1.dt)
