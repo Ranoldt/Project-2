@@ -42,7 +42,7 @@ class DictTuple:
         if len(lst) == 0:
             self.dt.append({key: value})
             return
-        for i in lst:
+        for i in lst[1:]:
             self.dt[lst[i]][key] = value
 
     def __delitem__(self, key):
