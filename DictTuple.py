@@ -35,9 +35,9 @@ class DictTuple:
             raise KeyError(f"{key} is not in {self.dt}")
 
     def __setitem__(self, key, value):
-        for i, item in enumerate(self.dt[::-1]):
+        for item in reversed(self.dt):
             if key in item:
-                self.dt[(len(self.dt)-1)-i][key] = value
+                item[key] = value
                 break
         else:
             self.dt.append({key: value})
