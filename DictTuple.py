@@ -38,6 +38,7 @@ class DictTuple:
         for item in self.dt:
             if key in item:
                 item.update({key: value})
+                return
         else:
             self.dt.append({key: value})
 
