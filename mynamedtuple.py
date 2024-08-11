@@ -48,7 +48,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 
     # __repr__ method
     repr_method = '    def __repr__(self):\n'
-    repr_method += f'        return f"{type_name}({",".join(f"{name}={{self.{name}}}" for name in field_names)})"\n'
+    repr_method += f'        return f"{type_name}({",".join(f"'{name}'={{self.{name}}}" for name in field_names)})"\n'
 
     # __getter__ methods
     get_methods = ''
@@ -113,12 +113,10 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_def += eq_method + asdict_method + make_method + replace_method + setattr_method
 
     namespace = {}
-    print(class_def)
     exec(class_def, {}, namespace)
     return namespace[type_name]
 
 if __name__ == '__main__':
     coordinate = mynamedtuple('coordinate', 'x y', mutable=True, default={'y':0})
     p = coordinate(1,2)
-    p._replace(z= 3)
-    print(p.__dict__)
+    print(p)

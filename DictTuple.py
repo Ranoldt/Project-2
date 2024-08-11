@@ -37,16 +37,18 @@ class DictTuple:
     def __setitem__(self, key, value):
         for item in self.dt[::-1]:
             if key in item:
-                item.update({key: value})
-                return
+                item[key] = value
+                break
         else:
             self.dt.append({key: value})
 
     def __delitem__(self, key):
         deleted = False
-        for item in self.dt:
+        for item in self.dt[:]:
             if key in item:
                 del item[key]
+                if len(item) == 0:
+                    self.dt.remove(item)
                 deleted = True
 
         if not deleted:
@@ -106,8 +108,12 @@ class DictTuple:
         self.__dict__[key] = value
 
 if __name__ == '__main__':
-    d1 = DictTuple({'a':1, 'b':2}, {'c':3, 'b':12, 'b': 5},{'g':2})
-    d1['b'] = 18
-    d1['e'] = 5
-    print(d1.dt)
-    d2 = {'a':1, 'c':3, 'b':12,'d':2}
+    grade = mynamedtuple('grade', 'name score letter')
+    t = DictTuple({'s1': grade('carl', 95, 'A')},
+                  {'s1': grade('mark', 30, 'F'), 's2': grade('eve', 78, 'C')},
+                  {'s1': grade('jeb', 55, 'D')},
+                  {'s1': grade('frank', 85, 'B')})
+
+    print(t)
+
+
