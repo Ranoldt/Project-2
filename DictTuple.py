@@ -38,7 +38,7 @@ class DictTuple:
         for item in reversed(self.dt):
             if key in item:
                 item.update({key: value})
-                break
+                return
         else:
             self.dt.append({key: value})
 
@@ -107,7 +107,7 @@ class DictTuple:
 
 if __name__ == '__main__':
     d1 = DictTuple({'a':1, 'b':2}, {'c':3, 'b':12},{'g':2})
-    d1['b'] = 10
+    d1['b'] = 18
     d1['e'] = 5
     print(d1.dt)
     d2 = {'a':1, 'c':3, 'b':12,'d':2}
