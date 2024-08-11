@@ -35,9 +35,9 @@ class DictTuple:
             raise KeyError(f"{key} is not in {self.dt}")
 
     def __setitem__(self, key, value):
-        for item in self.dt[::-1]:
+        for i, item in enumerate(self.dt[::-1]):
             if key in item:
-                item[key] = value
+                self.dt[(len(self.dt)-1)-i][key] = value
                 break
         else:
             self.dt.append({key: value})
@@ -102,20 +102,12 @@ class DictTuple:
             raise TypeError(f"{other} is not a DictTuple or a dict")
 
     def __setattr__(self, key, value):
-        try:
-            if super().__getattribute__('dt'):
-                dt_created = True
-        except AttributeError:
-            dt_created = False
-            self.__dict__[key] = value
-        if dt_created:
-            if key in self.__dict__:
-                self.__dict__[key] = value
-            else:
-                raise AttributeError(f"Cannot Modify DictTuple attributes")
+        assert key == 'dt', f"{key} is not dt"
+        self.__dict__[key] = value
 
 if __name__ == '__main__':
-    d1 = DictTuple({'a':1, 'b':2}, {'c':3, 'b':12})
+    d1 = DictTuple({'a':1, 'b':2}, {'c':3, 'b':12},{'g':2})
+    d1['b'] = 10
     d1['e'] = 5
-    print(d1)
+    print(d1.dt)
     d2 = {'a':1, 'c':3, 'b':12,'d':2}
