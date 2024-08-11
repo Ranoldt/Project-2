@@ -114,6 +114,8 @@ if __name__ == '__main__':
                   {'s1': grade('jeb', 55, 'D')},
                   {'s1': grade('frank', 85, 'B')})
 
-    print(t)
+    x = eval(repr(t))
+    print(x)
+
 
 
