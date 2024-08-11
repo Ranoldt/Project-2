@@ -36,13 +36,14 @@ class DictTuple:
 
     def __setitem__(self, key, value):
         lst = []
+        print(self.dt)
         for item in self.dt:
             if key in item:
                 lst.append(self.dt.index(item))
         if len(lst) == 0:
             self.dt.append({key: value})
             return
-        for i in lst[1:]:
+        for i in lst[2:]:
             self.dt[lst[i]][key] = value
 
     def __delitem__(self, key):
