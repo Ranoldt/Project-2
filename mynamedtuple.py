@@ -104,9 +104,8 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     setattr_method += '            self.__dict__[name] = value\n'
     setattr_method += '            return\n'
     setattr_method += '        if self._mutable:\n'
-    setattr_method += '            if name not in self.__dict__:\n'
-    setattr_method += '                raise AttributeError("namedtuple cannot add new attributes")\n'
-    setattr_method += '            self.__dict__[name] = value\n'
+    setattr_method += '            if name in self.__dict__:\n'
+    setattr_method += '                self.__dict__[name] = value\n'
     setattr_method += '        else:\n'
     setattr_method += '            raise AttributeError("namedtuple is not mutable.")\n'
 
@@ -117,3 +116,4 @@ def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     namespace = {}
     exec(class_def, {}, namespace)
     return namespace[type_name]
+

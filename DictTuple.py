@@ -3,7 +3,7 @@ from mynamedtuple import mynamedtuple
 
 class DictTuple:
     def __init__(self, *args):
-        assert len(args) != 0, f"{self.__class__.__name__} must have at least one argument"
+        assert len(args) != 0, f"{self.__class__.__name__}.__init__: must have at least one argument"
         for arg in args:
             assert type(arg) is dict, f"{self.__class__.__name__}.__init__: {arg} is not a dictionary."
             assert len(arg) != 0, f"{self.__class__.__name__}.__init__: {arg} is empty."
@@ -78,7 +78,7 @@ class DictTuple:
         elif type(other) is dict:
             other_set = {key for key in other.keys()}
         else:
-            raise TypeError(f"{other} is not a DictTuple or a dict")
+            return False
 
         for key in other_set:
             if key not in self:
@@ -105,16 +105,19 @@ class DictTuple:
             raise TypeError(f"{other} is not a DictTuple or a dict")
 
     def __setattr__(self, key, value):
-        assert key == 'dt', f"{key} is not dt"
-        self.__dict__[key] = value
+        assert key == 'dt', f"DictTuple.__setattr__: {key} is not dt"
+        if key not in self.__dict__:
+            self.__dict__[key] = value
+        else:
+            raise AssertionError(f"DictTuple.__setattr__: cannot rebind attributes")
 
-if __name__ == '__main__':
-    d1 = DictTuple({'a':2, 'b':3}, {'c':4, 'd':5, 'e':6, 'a':15})
-    print(d1)
-    d1['a'] = 5
-    print(d1)
-    d1['f'] = 7
-    print(d1)
+
+
+
+
+
+
+
 
 
 
