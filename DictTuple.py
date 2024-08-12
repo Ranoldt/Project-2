@@ -35,14 +35,13 @@ class DictTuple:
             raise KeyError(f"{key} is not in {self.dt}")
 
     def __setitem__(self, key, value):
-        lst = []
-        for item in self.dt:
+        for item in self.dt[::-1]:
             if key in item:
-                lst.append(self.dt.index(item))
-        if len(lst) == 0:
+                item[key] = value
+                break
+        else:
             self.dt.append({key: value})
-            return
-        self.dt[-1][key] = value
+
 
     def __delitem__(self, key):
         deleted = False
