@@ -40,7 +40,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_name = f'class {type_name}:\n'
     class_variables = f'    _fields = {field_names}\n'
     class_variables += f'    _mutable = {mutable}\n'
-    class_variables += '    _true = True'
+    class_variables += '    _true = True\n'
 
     # __init__ method
     init_method = f'    def __init__(self, {", ".join(f"{name}={default.get(name, None)}" for name in field_names)}):\n'
