@@ -45,6 +45,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     init_method = f'    def __init__(self, {", ".join(f"{name}={default.get(name, None)}" for name in field_names)}):\n'
     for name in field_names:
         init_method += f'        self.{name} = {name}\n'
+    init_method += '        self.hey = True\n'
 
     # __repr__ method
     repr_method = '    def __repr__(self):\n'
@@ -89,6 +90,8 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     replace_method += f'            raise TypeError("{type_name}._replace must have at least one argument.")\n'
     replace_method += '        if self._mutable:\n'
     replace_method += '            for key, value in kargs.items():\n'
+    replace_method += '                if key not in self._fields:\n'
+    replace_method += f'                    raise TypeError("{type_name}_replace cannot add new attributes.")\n'
     replace_method += '                setattr(self, key, value)\n'
     replace_method += '        else:\n'
     replace_method += '            param = {key: kargs.get(key, self._asdict().get(key)) for key in self._fields}\n'
@@ -104,14 +107,13 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     setattr_method += '        if self._mutable:\n'
     setattr_method += '            if name in self.__dict__:\n'
     setattr_method += '                self.__dict__[name] = value\n'
-    setattr_method += '            else:\n'
-    setattr_method += f'                raise TypeError("{type_name}_replace cannot add new attributes.")\n'
     setattr_method += '        else:\n'
     setattr_method += '            raise AttributeError("namedtuple is not mutable.")\n'
 
     class_def = class_name + class_variables + init_method + repr_method + get_methods + getitem_method
     class_def += eq_method + asdict_method + make_method + replace_method + setattr_method
 
+    print(class_def)
     namespace = {}
     exec(class_def, {}, namespace)
     return namespace[type_name]
@@ -119,5 +121,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 if __name__ == '__main__':
     coordinate = mynamedtuple('coordinate', 'x y', mutable=True, default={'y':0})
     p = coordinate(1,2)
-    h = eval(repr(p))
-    print(h)
+    print(p)
+    print(p[0])
+
+
