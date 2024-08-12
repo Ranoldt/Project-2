@@ -1,7 +1,7 @@
 import keyword
 
 
-def mynamedtuple(type_name, field_names, mutable=False, default={}):
+def mynamedtuple(type_name, field_names, mutable=False, defaults={}):
     # Validate type_name
     try:
         assert type(type_name) is str and type_name.strip()[0].isalpha() is True and keyword.iskeyword(type_name) is False
@@ -14,10 +14,10 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
             raise SyntaxError(f"Field names cannot be an empty list.")
         field_names = [name.strip() for name in field_names]
     elif type(field_names) is str:
-        if field_names.isspace():
-            raise SyntaxError(f"Field names cannot be an empty string.")
         field_names = field_names.split(',')
         field_names = [name for field in field_names for name in field.split()]
+        if len(field_names) == 0:
+            raise SyntaxError(f"Field names cannot just be commas and spaces.")
     else:
         raise SyntaxError("Fields must be a list or a string")
 
@@ -32,8 +32,8 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
             raise SyntaxError(f"Invalid field name: '{name}' is a python keyword or does not begin with letter.")
 
     # Check if all default fields are in field_names
-    field_list = [element for element in field_names if element in list(default)]
-    if len(field_list) != len(list(default)):
+    field_list = [element for element in field_names if element in list(defaults)]
+    if len(field_list) != len(list(defaults)):
         raise SyntaxError("Mismatch between default fields and provided fields")
 
     # Class construction
@@ -42,7 +42,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_variables += f'    _mutable = {mutable}\n'
 
     # __init__ method
-    init_method = f'    def __init__(self, {", ".join(f"{name}={default.get(name, None)}" if name in default else str(name) for name in field_names)}):\n'
+    init_method = f'    def __init__(self, {", ".join(f"{name}={defaults.get(name, None)}" if name in defaults else str(name) for name in field_names)}):\n'
     for name in field_names:
         init_method += f'        self.{name} = {name}\n'
 
@@ -104,8 +104,9 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     setattr_method += '            self.__dict__[name] = value\n'
     setattr_method += '            return\n'
     setattr_method += '        if self._mutable:\n'
-    setattr_method += '            if name in self.__dict__:\n'
-    setattr_method += '                self.__dict__[name] = value\n'
+    setattr_method += '            if name not in self.__dict__:\n'
+    setattr_method += '                raise AttributeError("namedtuple cannot add new attributes")\n'
+    setattr_method += '            self.__dict__[name] = value\n'
     setattr_method += '        else:\n'
     setattr_method += '            raise AttributeError("namedtuple is not mutable.")\n'
 
@@ -113,16 +114,6 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_def = class_name + class_variables + init_method + repr_method + get_methods + getitem_method
     class_def += eq_method + asdict_method + make_method + replace_method + setattr_method
 
-    print(class_def)
     namespace = {}
     exec(class_def, {}, namespace)
     return namespace[type_name]
-
-if __name__ == '__main__':
-    coordinate = mynamedtuple('coordinate', ['x', 'y'], mutable=False, default={'y':0})
-    p = coordinate(x=1, y=5)
-    print(p._asdict())
-    x = coordinate._make([])
-    print(x._asdict())
-
-
