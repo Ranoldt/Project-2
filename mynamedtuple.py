@@ -10,19 +10,19 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
 
     # Validate field name is list or string
     if type(field_names) is list:
-        pass
+        if len(field_names) == 0:
+            raise SyntaxError(f"Field names cannot be an empty list.")
+        field_names = [name.strip() for name in field_names]
     elif type(field_names) is str:
-        if ',' in field_names:
-            field_names = field_names.split(',')
-        else:
-            field_names = field_names.split()
+        if field_names.isspace():
+            raise SyntaxError(f"Field names cannot be an empty string.")
+        field_names = field_names.split(',')
+        field_names = [name for field in field_names for name in field.split()]
     else:
         raise SyntaxError("Fields must be a list or a string")
-    new_lst = []
-    for i in field_names:
-        if i not in new_lst:
-            new_lst.append(i.strip())
-    field_names = new_lst
+
+    # Validate no duplicates in the field names
+    field_names = list(dict.fromkeys(field_names))
 
     # Validate each field name
     for name in field_names:
@@ -42,8 +42,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_variables += f'    _mutable = {mutable}\n'
 
     # __init__ method
-    init_method = f'    def __init__(self, {", ".join(f"{name}={default.get(name, None)}" for name in field_names)}):\n'
-    init_method += '        self.test = True\n'
+    init_method = f'    def __init__(self, {", ".join(f"{name}={default.get(name, None)}" if name in default else str(name) for name in field_names)}):\n'
     for name in field_names:
         init_method += f'        self.{name} = {name}\n'
 
@@ -67,14 +66,14 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     eq_method += '            return False\n'
     eq_method += '        elif self._fields != other._fields:\n'
     eq_method += '            return False\n'
-    eq_method += '        for i in range(len(self._fields)):\n'
-    eq_method += '            if self[i] != other[i]:\n'
+    eq_method += '        for index in range(len(self._fields)):\n'
+    eq_method += '            if self[index] != other[index]:\n'
     eq_method += '                return False\n'
     eq_method += '        return True\n'
 
     # _asdict method
     asdict_method = '    def _asdict(self):\n'
-    asdict_method += '        return {key:self[i] for i,key in enumerate(self._fields)}\n'
+    asdict_method += '        return {key:self[index] for index,key in enumerate(self._fields)}\n'
 
     # _make method
     make_method = '    @classmethod\n'
@@ -120,9 +119,10 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     return namespace[type_name]
 
 if __name__ == '__main__':
-    coordinate = mynamedtuple('coordinate', 'x y', mutable=False, default={'y':0})
-    p = coordinate(1,2)
-    print(p)
-    print(p[0])
+    coordinate = mynamedtuple('coordinate', ['x', 'y'], mutable=False, default={'y':0})
+    p = coordinate(x=1, y=5)
+    print(p._asdict())
+    x = coordinate._make([])
+    print(x._asdict())
 
 
