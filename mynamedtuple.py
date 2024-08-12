@@ -40,12 +40,12 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_name = f'class {type_name}:\n'
     class_variables = f'    _fields = {field_names}\n'
     class_variables += f'    _mutable = {mutable}\n'
+    class_variables += '    _true = True'
 
     # __init__ method
     init_method = f'    def __init__(self, {", ".join(f"{name}={default.get(name, None)}" for name in field_names)}):\n'
     for name in field_names:
         init_method += f'        self.{name} = {name}\n'
-    init_method += '        self.hey = True\n'
 
     # __repr__ method
     repr_method = '    def __repr__(self):\n'
@@ -119,7 +119,7 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     return namespace[type_name]
 
 if __name__ == '__main__':
-    coordinate = mynamedtuple('coordinate', 'x y', mutable=True, default={'y':0})
+    coordinate = mynamedtuple('coordinate', 'x y', mutable=False, default={'y':0})
     p = coordinate(1,2)
     print(p)
     print(p[0])
