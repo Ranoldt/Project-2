@@ -40,7 +40,6 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     class_name = f'class {type_name}:\n'
     class_variables = f'    _fields = {field_names}\n'
     class_variables += f'    _mutable = {mutable}\n'
-    class_variables += '    _true = True\n'
 
     # __init__ method
     init_method = f'    def __init__(self, {", ".join(f"{name}={default.get(name, None)}" for name in field_names)}):\n'
@@ -110,8 +109,11 @@ def mynamedtuple(type_name, field_names, mutable=False, default={}):
     setattr_method += '        else:\n'
     setattr_method += '            raise AttributeError("namedtuple is not mutable.")\n'
 
+    random_method = '    def random(self):\n'
+    random_method += '        pass\n'
+
     class_def = class_name + class_variables + init_method + repr_method + get_methods + getitem_method
-    class_def += eq_method + asdict_method + make_method + replace_method + setattr_method
+    class_def += eq_method + asdict_method + make_method + replace_method + setattr_method + random_method
 
     print(class_def)
     namespace = {}
